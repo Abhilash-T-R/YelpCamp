@@ -1,6 +1,7 @@
 const {campgroundSchema,reviewSchema} = require('./schemas.js');
 const ExpressError = require('./utils/ExpressError.js');
 const Campground = require('./models/campground');
+const Review = require('./models/review');
 const catchAsync = require('./utils/catchAsync');
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -48,3 +49,13 @@ module.exports.validateReview = (req,res,next)=>{
         next();
     }
 }
+
+module.exports.isReviewAuthor = catchAsync( async (req,res,next)=>{
+    const {id,reviewid} = req.params;
+    const r = await Review.findById(reviewid);
+    if(!r.author.equals(req.user._id)){
+        req.flash('error','You do not have permission to edit this campground');
+        return res.redirect(`/campgrounds/${id}`);
+    }
+    next();
+})
