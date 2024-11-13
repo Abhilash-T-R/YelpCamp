@@ -9,6 +9,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const express_mongo_sanitize = require('express-mongo-sanitize');
 
 const campgroundsRoutes = require('./routes/campgrounds');
 const reviewsRoutes = require('./routes/reviews');
@@ -58,6 +59,7 @@ app.use('/',userRoutes);
 app.use('/campgrounds',campgroundsRoutes);
 app.use('/campgrounds/:id/reviews',reviewsRoutes);
 app.use(express.static(path.join(__dirname,'public')));
+app.use(express_mongo_sanitize());
 
 app.get('/',(req,res)=>{
     res.render('home');
